@@ -9,11 +9,11 @@ class Engineer extends Employee{
   }
 }
 
-Employee.prototype.getRole = function(){
+Engineer.prototype.getRole = function(){
   return "Engineer";
 }
 
-Employee.prototype.getGithub = function(){
+Engineer.prototype.getGithub = function(){
   return this.github;
 }
 module.exports = Engineer;
