@@ -1,0 +1,23 @@
+{
+  "name": "EmployeeSummaryGenerator",
+  "version": "1.0.0",
+  "description": "A Program to help organize and view employee information taken in from the command line",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaronSchmit/EmployeeSummaryGenerator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaronSchmit/EmployeeSummaryGenerator/issues"
+  },
+  "homepage": "https://github.com/DaronSchmit/EmployeeSummaryGenerator#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
