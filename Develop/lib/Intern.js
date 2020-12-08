@@ -16,3 +16,5 @@ Intern.prototype.getRole = function(){
 Intern.prototype.getSchool = function(){
   return this.school;
 }
+
+module.exports = Intern;
