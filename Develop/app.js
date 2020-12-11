@@ -46,7 +46,7 @@ const anyButtonToExit = () => {
   process.stdin.on('data', process.exit.bind(process, 0));
 }
 
-const managerPrompt = async () => {
+const managerPrompt = () => {
   console.log("Manager Selected");
   inquirer
     .prompt([
@@ -72,7 +72,7 @@ const managerPrompt = async () => {
     },
     {
       type: 'list',
-      name: 'role',
+      name: 'nextOne',
       message: 'What type of role is their first employee?',
       choices: [
         'Intern',
@@ -81,13 +81,8 @@ const managerPrompt = async () => {
     }
       ])
     .then((answer) => {
-    let manager = new Manager(answer.name, answer.id, answer.email, answer.officeNum);
-    switch(answer.role){
-      case 'Intern':
-        return([manager].concat(internPrompt()));
-      case 'Engineer':
-        return([manager].concat(engineerPrompt()));
-      }    })
+    return [new Manager(answer.name, answer.id, answer.email, answer.officeNum), answer.nextOne];
+  })
 }
 
 const basicQ = [
@@ -136,15 +131,7 @@ const engineerPrompt = () => {
   inquirer
   .prompt(basicQ.concat(engineerQ, whichQ))
   .then((answer) => {
-    let newGuy = new Engineer(answer.name, answer.id, answer.email, answer.github);
-    switch(answer.role){
-      case 'Intern':
-        return([newGuy].concat(internPrompt()));
-      case 'Engineer':
-        return([newGuy].concat(engineerPrompt()));
-      case 'Done':
-        return [newGuy];
-      }
+    return new Engineer(answer.name, answer.id, answer.email, answer.github);
   })
 }
 
@@ -152,21 +139,60 @@ const internPrompt = () => {
   inquirer
   .prompt(basicQ.concat(internQ, whichQ))
   .then((answer) => {
-    let newGuy = new Engineer(answer.name, answer.id, answer.email, answer.school);
+    let newGuy = new Intern(answer.name, answer.id, answer.email, answer.school);
     switch(answer.role){
       case 'Intern':
+        console.log("making new intern")
         return([newGuy].concat(internPrompt()));
       case 'Engineer':
-        return([newGuy].concat(engineerPrompt()));
+        console.log("making new engineer")
       case 'Done':
+        console.log('done, returning employee')
+        console.log(newGuy);
         return [newGuy];
     }
   })
 }
 
+async function createTeam(){
+  let promise = new Promise((res, rej) => {
+    managerPrompt();
+  });
+  
+  let result = await promise;
+  let team = [];
+  team.concat(result);
+  console.log(result);
+  
+  let done = false;
+  while(!done){
+    next = promptWhich();
+    switch(next){
+      case 'Engineer':
+        newGuy =
+    }
+    if(newGuy.role === "Done"){
+      done = true;
+    }
+    
+  }
+}
+createTeam();
 
 function writeFile(){
+  console.log("writing file");
     fs.writeFileSync(outputPath, render(employees), "utf-8");
 }
 
-managerPrompt().then(writeFile());
+async function firstAsync() {
+    let promise = new Promise((res, rej) => {
+        setTimeout(() => res("Now it's done!"), 1000)
+    });
+
+    // wait until the promise returns us a value
+    let result = await promise;
+  
+    // "Now it's done!"
+    console.log(result);
+    }
+//firstAsync();
