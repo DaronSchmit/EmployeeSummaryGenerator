@@ -46,7 +46,7 @@ const anyButtonToExit = () => {
   process.stdin.on('data', process.exit.bind(process, 0));
 }
 
-const managerPrompt = () => {
+const managerPrompt = async () => {
   console.log("Manager Selected");
   inquirer
     .prompt([
@@ -71,14 +71,23 @@ const managerPrompt = () => {
       message: 'What is their office number?'
     },
     {
-      type: 'number',
-      name: 'employees',
-      message: 'How many employees do they manage?'
+      type: 'list',
+      name: 'role',
+      message: 'What type of role is their first employee?',
+      choices: [
+        'Intern',
+        'Engineer'
+      ],
     }
       ])
     .then((answer) => {
-      return [answer, buildTeam(answer.employees)];
-    })
+    let manager = new Manager(answer.name, answer.id, answer.email, answer.officeNum);
+    switch(answer.role){
+      case 'Intern':
+        return([manager].concat(internPrompt()));
+      case 'Engineer':
+        return([manager].concat(engineerPrompt()));
+      }    })
 }
 
 const basicQ = [
@@ -97,15 +106,6 @@ const basicQ = [
       name: 'email',
       message: 'What is their email?'
     },
-    {
-      type: 'list',
-      name: 'role',
-      message: 'What type of role are they?',
-      choices: [
-        'Intern',
-        'Engineer'
-      ],
-    }
   ];
 
 const engineerQ = {
@@ -120,24 +120,53 @@ const internQ = {
   message: 'What school do they go to?'
 }
 
-const buildTeam = (num) => {
-  for (let i = 0; i < num; i++){
-    inquirer
-    .prompt(basicQ)
-    
-    .then((answer) => {
-      switch(answer.role){
-       case 'Engineer':
-         console.log('Engineer');
-         break;
-        case 'Intern':
-          console.log('Intern');
-          break;
-      }
-
-      
-    });
-  }
+const whichQ = {
+      type: 'list',
+      name: 'role',
+      message: 'What type of role is the next employee?',
+      choices: [
+        'Intern',
+        'Engineer',
+        new inquirer.Separator(),
+        'Done'
+      ],
 }
 
-managerPrompt();
+const engineerPrompt = () => {
+  inquirer
+  .prompt(basicQ.concat(engineerQ, whichQ))
+  .then((answer) => {
+    let newGuy = new Engineer(answer.name, answer.id, answer.email, answer.github);
+    switch(answer.role){
+      case 'Intern':
+        return([newGuy].concat(internPrompt()));
+      case 'Engineer':
+        return([newGuy].concat(engineerPrompt()));
+      case 'Done':
+        return [newGuy];
+      }
+  })
+}
+
+const internPrompt = () => {
+  inquirer
+  .prompt(basicQ.concat(internQ, whichQ))
+  .then((answer) => {
+    let newGuy = new Engineer(answer.name, answer.id, answer.email, answer.school);
+    switch(answer.role){
+      case 'Intern':
+        return([newGuy].concat(internPrompt()));
+      case 'Engineer':
+        return([newGuy].concat(engineerPrompt()));
+      case 'Done':
+        return [newGuy];
+    }
+  })
+}
+
+
+function writeFile(){
+    fs.writeFileSync(outputPath, render(employees), "utf-8");
+}
+
+managerPrompt().then(writeFile());
