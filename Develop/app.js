@@ -5,6 +5,7 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 
+
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
@@ -33,3 +34,94 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+
+/**
+ * List prompt example
+ */
+
+const anyButtonToExit = () => {
+  console.log('Press any key to exit');
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on('data', process.exit.bind(process, 0));
+}
+
+const employeePrompt = (basicQ.concat()) => {
+  inquirer
+    .prompt()
+  .then((answer) => {
+    console.log(answer);
+    return answer;
+  });
+} //name,id, email
+
+const managerPrompt = () => {
+  console.log("Manager Selected");
+  inquirer
+    .prompt([
+    {
+      type: 'input',
+      name: 'name: ',
+      message: 'What is their name?'
+    },
+    {
+      type: 'input',
+      name: 'id',
+      message: 'What is their employee ID?'
+    },
+    {
+      type: 'input',
+      name: 'email',
+      message: 'What is their email?'
+    },
+    {
+      type: 'input',
+      name: 'officeNum',
+      message: 'What is their office number?'
+    }
+      ])
+    .then((answer) => {
+      return [answer, buildTeam()];
+    })
+}
+
+const basicQ = [
+    {
+      type: 'input',
+      name: 'name: ',
+      message: 'What is their name?'
+    },
+    {
+      type: 'input',
+      name: 'id',
+      message: 'What is their employee ID?'
+    },
+    {
+      type: 'input',
+      name: 'email',
+      message: 'What is their email?'
+    },
+    {
+      type: 'list',
+      name: 'role',
+      message: 'What type of role are they?',
+      choices: [
+        'Intern',
+        'Engineer',
+        new inquirer.Separator(),
+        'None - Close and view Webpage',
+      ],
+    }
+  ];
+
+const engineerQ = {
+  type: 'input',
+  name: 'github',
+  message: 'What is their github?'
+}
+
+const internQ = {
+  type: 'input',
+  name: 'school',
+  message: 'What school do they go to?'
+}
