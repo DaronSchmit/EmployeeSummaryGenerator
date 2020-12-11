@@ -46,15 +46,6 @@ const anyButtonToExit = () => {
   process.stdin.on('data', process.exit.bind(process, 0));
 }
 
-const employeePrompt = (basicQ.concat()) => {
-  inquirer
-    .prompt()
-  .then((answer) => {
-    console.log(answer);
-    return answer;
-  });
-} //name,id, email
-
 const managerPrompt = () => {
   console.log("Manager Selected");
   inquirer
@@ -78,10 +69,15 @@ const managerPrompt = () => {
       type: 'input',
       name: 'officeNum',
       message: 'What is their office number?'
+    },
+    {
+      type: 'number',
+      name: 'employees',
+      message: 'How many employees do they manage?'
     }
       ])
     .then((answer) => {
-      return [answer, buildTeam()];
+      return [answer, buildTeam(answer.employees)];
     })
 }
 
@@ -107,9 +103,7 @@ const basicQ = [
       message: 'What type of role are they?',
       choices: [
         'Intern',
-        'Engineer',
-        new inquirer.Separator(),
-        'None - Close and view Webpage',
+        'Engineer'
       ],
     }
   ];
@@ -125,3 +119,25 @@ const internQ = {
   name: 'school',
   message: 'What school do they go to?'
 }
+
+const buildTeam = (num) => {
+  for (let i = 0; i < num; i++){
+    inquirer
+    .prompt(basicQ)
+    
+    .then((answer) => {
+      switch(answer.role){
+       case 'Engineer':
+         console.log('Engineer');
+         break;
+        case 'Intern':
+          console.log('Intern');
+          break;
+      }
+
+      
+    });
+  }
+}
+
+managerPrompt();
