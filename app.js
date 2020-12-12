@@ -1,6 +1,6 @@
-const Manager = require("./lib/Manager");
-const Engineer = require("./lib/Engineer");
-const Intern = require("./lib/Intern");
+const Manager = require("./Develop/lib/Manager");
+const Engineer = require("./Develop/lib/Engineer");
+const Intern = require("./Develop/lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -9,7 +9,7 @@ const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./lib/htmlRenderer");
+const render = require("./Develop/lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
@@ -39,12 +39,6 @@ const render = require("./lib/htmlRenderer");
  * List prompt example
  */
 
-const anyButtonToExit = () => {
-  console.log('Press any key to exit');
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-  process.stdin.on('data', process.exit.bind(process, 0));
-}
 
 const basicQ = [
   {
@@ -109,8 +103,6 @@ const collectInputs = async (inputs = [], prompts) => {
     newGuy = new Intern(answers.name, answers.id, answers.email, answers.school);
   }
   const newInputs = [...inputs, newGuy];
-  //console.log(newGuy);
-  //return again ? collectInputs(newInputs) : newInputs;
 
   switch (again) {
     case "Intern":
@@ -128,13 +120,14 @@ const collectInputs = async (inputs = [], prompts) => {
 
 const main = async () => {
   const inputs = await collectInputs([], basicQ.concat(managerQ, whichQ));
-  console.log(inputs);
+  return inputs;
 };
 
-main();
-
-
-function writeFile(){
-  console.log("writing file");
-    fs.writeFileSync(outputPath, render(employees), "utf-8");
-}
+main().then(async (employees) => {
+  let html = render(employees);
+  await fs.writeFile(outputPath, html, function (error) {
+      if (error) {
+          console.log(error);
+      }
+  })
+});
